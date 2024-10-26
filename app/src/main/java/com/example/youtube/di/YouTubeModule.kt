@@ -9,7 +9,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-
+val youtubeModule = listOf(networkModule, repositoryModule, viewModelModule)
 
 fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit =
     Retrofit.Builder()

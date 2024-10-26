@@ -1,31 +1,38 @@
 package com.example.youtube.ui.fragment.playlists
 
 import androidx.fragment.app.viewModels
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import com.example.youtube.R
+import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.youtube.databinding.FragmentPlaylistsBinding
+import com.example.youtube.utils.Resource
+import com.example.youtubeapi.ui.base.BaseFragment
 
-class PlaylistsFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = PlaylistsFragment()
-    }
+class PlaylistsFragment :
+    BaseFragment<FragmentPlaylistsBinding>(FragmentPlaylistsBinding::inflate) {
 
     private val viewModel: PlaylistsViewModel by viewModels()
+    private val playlistsAdapter: PlaylistsAdapter by lazy { PlaylistsAdapter() }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
-        // TODO: Use the ViewModel
+    override fun setupViews() {
+        super.setupViews()
+        setupRecycler()
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        return inflater.inflate(R.layout.fragment_playlists, container, false)
+    override fun setupObservers() {
+        viewModel.getPlaylists().stateHandler(
+            success = { data ->
+                playlistsAdapter.submitList(data)
+            },
+            state = { state ->
+                binding.progressBar.isVisible = state is Resource.Loading
+            }
+        )
+    }
+
+    private fun setupRecycler() = with(binding.recyclerView) {
+        adapter = playlistsAdapter
+        layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
     }
 }
+

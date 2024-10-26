@@ -1,26 +1,25 @@
 package com.example.youtube.data.network
 
-import com.example.youtube.data.model.BaseResponse
-import com.example.youtube.data.model.VideoModel
+import com.example.youtubeapi.data.model.BaseResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface YouTubeApiService {
     @GET("playlists")
-    suspend fun getPlaylists(
+    suspend fun fetchPlaylists(
         @Query("part") part: String,
-        @Query("key") apiKey: String,
         @Query("channelId") channelId: String,
+        @Query("key") apiKey: String,
         @Query("maxResults") maxResults: Int
     ): Response<BaseResponse>
 
     @GET("playlistItems")
-    suspend fun getPlaylistItems(
+    fun getPlaylistItems(
         @Query("part") part: String,
         @Query("key") apiKey: String,
+        @Query("maxResults") maxResults: Int,
         @Query("playlistId") playlistId: String,
-        @Query("maxResults") maxResults: Int
-    ): Response<VideoModel>
-
+        @Query("pageToken") pageToken: String? = null
+    ): Response<BaseResponse>
 }

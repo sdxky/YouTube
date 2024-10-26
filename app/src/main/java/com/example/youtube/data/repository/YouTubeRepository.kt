@@ -1,34 +1,34 @@
 package com.example.youtube.data.repository
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
 import com.example.youtube.BuildConfig
-import com.example.youtube.data.model.BaseResponse
+import com.example.youtube.data.base.BaseRepository
 import com.example.youtube.data.network.YouTubeApiService
 import com.example.youtube.utils.Constants
 import com.example.youtube.utils.Resource
-import kotlinx.coroutines.Dispatchers
+import com.example.youtubeapi.data.model.BaseResponse
+import com.example.youtubeapi.data.model.Item
+import retrofit2.Response
+
+
+
+const val ARG_ERROR_MESSAGE = "Unknown Error"
 
 class YouTubeRepository(
-    private val service: YouTubeApiService
-) {
+    private val api: YouTubeApiService
+) : BaseRepository() {
 
-    fun getPlaylists(): LiveData<Resource<List<BaseResponse.Item>>> = liveData(Dispatchers.IO) {
-        emit(Resource.Loading())
-        try {
-            val response = service.getPlaylists(
-                apiKey = BuildConfig.API_KEY,
-                part = Constants.PART,
-                channelId = Constants.CHANNEL_ID,
-                maxResults = Constants.MAX_RESULTS
-            )
-            if (response.isSuccessful) {
-                response.body()?.let {
-                    emit(Resource.Success(it.items))
-                }
-            }
-        } catch (e: Exception) {
-            emit(Resource.Error(e.localizedMessage ?: "Unknown error"))
+    fun getPlayLists(): LiveData<Resource<List<Item>>> = sendRequest {
+        val response: Response<BaseResponse> = api.fetchPlaylists(
+            channelId = Constants.CHANNEL_ID,
+            part = Constants.PART,
+            maxResults = Constants.MAX_RESULTS,
+            apiKey = BuildConfig.API_KEY
+        )
+        if (response.isSuccessful) {
+            Response.success(response.body()?.items ?: emptyList())
+        } else {
+            Response.error(response.errorBody()!!, response.raw())
         }
     }
 }
