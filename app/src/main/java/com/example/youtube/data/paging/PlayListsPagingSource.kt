@@ -5,8 +5,8 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.youtube.data.network.YouTubeApiService
 import com.example.youtube.BuildConfig
+import com.example.youtube.data.model.Item
 import com.example.youtube.utils.Constants
-import com.example.youtubeapi.data.model.Item
 
 class PlayListsPagingSource(
     private val api: YouTubeApiService,

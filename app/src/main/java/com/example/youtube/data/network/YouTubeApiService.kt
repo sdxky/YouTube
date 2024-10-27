@@ -1,6 +1,6 @@
 package com.example.youtube.data.network
 
-import com.example.youtubeapi.data.model.BaseResponse
+import com.example.youtube.data.model.BaseResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
